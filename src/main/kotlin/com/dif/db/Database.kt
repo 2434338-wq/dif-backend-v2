@@ -81,7 +81,7 @@ fun initDatabase(config: ApplicationConfig) {
     val port     = System.getenv("MYSQLPORT") ?: "3306"
     val db       = System.getenv("MYSQLDATABASE") ?: "railway"
     val user     = System.getenv("MYSQLUSER") ?: "root"
-    val password = System.getenv("MYSQLPASSWORD") ?: ""
+    val password = System.getenv("MYSQLPASSWORD") ?: System.getenv("MYSQL_ROOT_PASSWORD") ?: ""
     val url      = "jdbc:mysql://$host:$port/$db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
 
     println("Conectando a MySQL: $host:$port/$db como $user")
