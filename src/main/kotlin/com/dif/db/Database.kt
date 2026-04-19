@@ -77,10 +77,12 @@ object Notificaciones : IntIdTable("notificaciones") {
 }
 
 fun initDatabase(config: ApplicationConfig) {
-    val url      = System.getenv("MYSQL_URL")
-        ?: "jdbc:mysql://mysql.railway.internal:3306/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+    val host     = System.getenv("MYSQLHOST") ?: "mysql.railway.internal"
+    val port     = System.getenv("MYSQLPORT") ?: "3306"
+    val db       = System.getenv("MYSQLDATABASE") ?: "railway"
     val user     = System.getenv("MYSQLUSER") ?: "root"
     val password = System.getenv("MYSQLPASSWORD") ?: ""
+    val url      = "jdbc:mysql://$host:$port/$db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
 
     Database.connect(url, driver = "com.mysql.cj.jdbc.Driver", user = user, password = password)
 
