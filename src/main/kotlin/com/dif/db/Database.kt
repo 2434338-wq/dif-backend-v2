@@ -77,28 +77,15 @@ object Notificaciones : IntIdTable("notificaciones") {
 }
 
 fun initDatabase(config: ApplicationConfig) {
-    // MYSQL_URL format: mysql://user:password@host:port/database
-    val mysqlUrl = System.getenv("MYSQL_URL")
-        ?: throw RuntimeException("MYSQL_URL environment variable not set")
+    val host     = System.getenv("MYSQLHOST") ?: "mysql.railway.internal"
+    val port     = System.getenv("MYSQLPORT") ?: "3306"
+    val db       = System.getenv("MYSQLDATABASE") ?: "railway"
+    val user     = System.getenv("MYSQLUSER") ?: "root"
+    val password = System.getenv("MYSQLPASSWORD") ?: ""
+    val url      = "jdbc:mysql://$host:$port/$db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
 
-    // Convert mysql:// to jdbc:mysql://
-    val jdbcUrl = mysqlUrl
-        .replace("mysql://", "jdbc:mysql://")
-        .let {
-            if (it.contains("?")) it + "&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-            else it + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-        }
-
-    // Extract user and password from URL
-    val regex = Regex("jdbc:mysql://([^:]+):([^@]+)@.*")
-    val match = regex.find(jdbcUrl)
-    val user     = match?.groupValues?.get(1) ?: System.getenv("MYSQLUSER") ?: "root"
-    val password = match?.groupValues?.get(2) ?: System.getenv("MYSQLPASSWORD") ?: ""
-
-    // Clean URL removing credentials for JDBC
-    val cleanUrl = jdbcUrl.replace(Regex("//[^@]+@"), "//")
-
-    Database.connect(cleanUrl, driver = "com.mysql.cj.jdbc.Driver", user = user, password = password)
+    println("Conectando a MySQL: $host:$port/$db como $user")
+    Database.connect(url, driver = "com.mysql.cj.jdbc.Driver", user = user, password = password)
 
     transaction {
         SchemaUtils.createMissingTablesAndColumns(
