@@ -20,7 +20,16 @@ fun Route.notificacionesRoutes() {
             val lista = transaction {
                 Notificaciones.select { Notificaciones.usuarioId eq userId }
                     .orderBy(Notificaciones.creadoEn, SortOrder.DESC)
-                    .map { NotificacionResponse(it[Notificaciones.id].value, it[Notificaciones.usuarioId], it[Notificaciones.titulo], it[Notificaciones.mensaje], it[Notificaciones.tipo], it[Notificaciones.leida], it[Notificaciones.creadoEn]) }
+                    .map {
+                        NotificacionResponse(
+                            id       = it[Notificaciones.id].value,
+                            titulo   = it[Notificaciones.titulo],
+                            mensaje  = it[Notificaciones.mensaje],
+                            tipo     = it[Notificaciones.tipo],
+                            leida    = it[Notificaciones.leida],
+                            creadoEn = it[Notificaciones.creadoEn]
+                        )
+                    }
             }
             call.respond(lista)
         }
@@ -30,7 +39,9 @@ fun Route.notificacionesRoutes() {
             val userId = principal.payload.getClaim("userId").asInt()
             val id = call.parameters["id"]?.toIntOrNull() ?: return@post call.respond(HttpStatusCode.BadRequest)
             transaction {
-                Notificaciones.update({ (Notificaciones.id eq id) and (Notificaciones.usuarioId eq userId) }) { it[Notificaciones.leida] = true }
+                Notificaciones.update({ (Notificaciones.id eq id) and (Notificaciones.usuarioId eq userId) }) {
+                    it[Notificaciones.leida] = true
+                }
             }
             call.respond(ApiResponse(true, "Notificación marcada como leída"))
         }
@@ -38,7 +49,11 @@ fun Route.notificacionesRoutes() {
         post("/notificaciones/leer-todas") {
             val principal = call.principal<JWTPrincipal>()!!
             val userId = principal.payload.getClaim("userId").asInt()
-            transaction { Notificaciones.update({ Notificaciones.usuarioId eq userId }) { it[Notificaciones.leida] = true } }
+            transaction {
+                Notificaciones.update({ Notificaciones.usuarioId eq userId }) {
+                    it[Notificaciones.leida] = true
+                }
+            }
             call.respond(ApiResponse(true, "Todas las notificaciones marcadas como leídas"))
         }
     }
