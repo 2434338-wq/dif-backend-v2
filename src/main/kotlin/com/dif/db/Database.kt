@@ -3,7 +3,6 @@ package com.dif.db
 import io.ktor.server.config.*
 import org.jetbrains.exposed.dao.id.IntIdTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.javatime.datetime
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.mindrot.jbcrypt.BCrypt
 import java.time.LocalDateTime
@@ -92,15 +91,14 @@ fun initDatabase(config: ApplicationConfig) {
         val count = Usuarios.select { Usuarios.correo eq "admin@dif.gob.mx" }.count()
         if (count == 0L) {
             Usuarios.insert {
-                it[nombre]   = "Administrador DIF"
-                it[correo]   = "admin@dif.gob.mx"
+                it[Usuarios.nombre]   = "Administrador DIF"
+                it[Usuarios.correo]   = "admin@dif.gob.mx"
                 it[Usuarios.password] = BCrypt.hashpw("admin123", BCrypt.gensalt())
-                it[rol]      = "admin"
-                it[area]     = "Dirección General"
-                it[creadoEn] = LocalDateTime.now().toString()
+                it[Usuarios.rol]      = "admin"
+                it[Usuarios.area]     = "Dirección General"
+                it[Usuarios.creadoEn] = LocalDateTime.now().toString()
             }
-            println("✅ Admin creado")
         }
     }
-    println("✅ Conexión MySQL Railway exitosa")
+    println("Conexion MySQL Railway exitosa")
 }
