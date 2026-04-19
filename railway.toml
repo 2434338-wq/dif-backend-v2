@@ -1,3 +1,5 @@
 [build]
-builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "java -jar build/libs/dif-backend-1.0.0.jar"
