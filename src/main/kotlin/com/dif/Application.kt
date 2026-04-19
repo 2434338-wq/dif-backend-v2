@@ -87,7 +87,7 @@ fun Application.module() {
     routing {
 
         get("/") {
-            call.respond(mapOf("status" to "DIF Metepec Backend v1.0", "ok" to true))
+            call.respond(mapOf("status" to "DIF Metepec Backend v1.0", "ok" to "true"))
         }
 
         get("/health") {
