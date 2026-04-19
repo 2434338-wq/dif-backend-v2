@@ -18,7 +18,7 @@ object Usuarios : IntIdTable("usuarios") {
     val estado    = varchar("estado", 20).default("Activo")
     val area      = varchar("area", 100).default("")
     val fcmToken  = varchar("fcm_token", 255).default("")
-    val creadoEn  = varchar("creado_en", 50).default("")
+    val creadoEn  = varchar("creado_en", 30).default("")
 }
 
 object Donaciones : IntIdTable("donaciones") {
@@ -31,7 +31,7 @@ object Donaciones : IntIdTable("donaciones") {
     val unidad         = varchar("unidad", 50).default("pza")
     val fecha          = varchar("fecha", 20)
     val estado         = varchar("estado", 50).default("Disponible")
-    val creadoEn       = varchar("creado_en", 50).default("")
+    val creadoEn       = varchar("creado_en", 30).default("")
 }
 
 object Solicitudes : IntIdTable("solicitudes") {
@@ -44,7 +44,7 @@ object Solicitudes : IntIdTable("solicitudes") {
     val estatus        = varchar("estatus", 50).default("Pendiente")
     val prioridad      = varchar("prioridad", 20).default("Media")
     val imagenUrl      = varchar("imagen_url", 255).default("no_image.jpg")
-    val creadoEn       = varchar("creado_en", 50).default("")
+    val creadoEn       = varchar("creado_en", 30).default("")
 }
 
 object Inventario : IntIdTable("inventario") {
@@ -54,7 +54,7 @@ object Inventario : IntIdTable("inventario") {
     val stockMinimo      = integer("stock_minimo").default(5)
     val unidad           = varchar("unidad", 50).default("piezas")
     val ubicacion        = varchar("ubicacion", 200).default("")
-    val ultimoMovimiento = varchar("ultimo_movimiento", 50).default("")
+    val ultimoMovimiento = varchar("ultimo_movimiento", 30).default("")
 }
 
 object Entregas : IntIdTable("entregas") {
@@ -64,7 +64,7 @@ object Entregas : IntIdTable("entregas") {
     val observaciones = varchar("observaciones", 500).default("")
     val fecha         = varchar("fecha", 20)
     val entregadoPor  = varchar("entregado_por", 200).default("")
-    val creadoEn      = varchar("creado_en", 50).default("")
+    val creadoEn      = varchar("creado_en", 30).default("")
 }
 
 object Notificaciones : IntIdTable("notificaciones") {
@@ -73,20 +73,19 @@ object Notificaciones : IntIdTable("notificaciones") {
     val mensaje   = varchar("mensaje", 500)
     val tipo      = varchar("tipo", 50).default("info")
     val leida     = bool("leida").default(false)
-    val creadoEn  = varchar("creado_en", 50).default("")
+    val creadoEn  = varchar("creado_en", 30).default("")
 }
 
 fun initDatabase(config: ApplicationConfig) {
-    val host = System.getenv("MYSQLHOST") ?: "mysql.railway.internal"
-    val port = System.getenv("MYSQLPORT") ?: "3306"
-    val db   = System.getenv("MYSQLDATABASE") ?: "railway"
-    val user = System.getenv("MYSQLUSER") ?: "root"
+    val host     = System.getenv("MYSQLHOST") ?: "mysql.railway.internal"
+    val port     = System.getenv("MYSQLPORT") ?: "3306"
+    val db       = System.getenv("MYSQLDATABASE") ?: "railway"
+    val user     = System.getenv("MYSQLUSER") ?: "root"
     val password = System.getenv("MYSQLPASSWORD")
         ?: System.getenv("MYSQL_ROOT_PASSWORD")
-        ?: ""
-
-    println("Conectando a MySQL: $host:$port/$db como $user, password presente: ${password.isNotEmpty()}")
+        ?: "pqgVXixEukoPCwTJcVlDFSrSrqXftugk"
     val url = "jdbc:mysql://$host:$port/$db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+
     Database.connect(url, driver = "com.mysql.cj.jdbc.Driver", user = user, password = password)
 
     transaction {
@@ -103,6 +102,7 @@ fun initDatabase(config: ApplicationConfig) {
                 it[Usuarios.area]     = "Dirección General"
                 it[Usuarios.creadoEn] = LocalDateTime.now().toString()
             }
+            println("Admin creado")
         }
     }
     println("Conexion MySQL Railway exitosa")
