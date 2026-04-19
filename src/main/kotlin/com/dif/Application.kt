@@ -98,7 +98,7 @@ fun Application.module() {
 
         authRoutes()
         donacionesRoutes()
-        solicitudesRoutes(uploadsDir)
+        solicitudesRoutes()
         adminRoutes()
         notificacionesRoutes()
 

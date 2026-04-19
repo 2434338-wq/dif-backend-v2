@@ -94,7 +94,7 @@ fun initDatabase(config: ApplicationConfig) {
             Usuarios.insert {
                 it[nombre]   = "Administrador DIF"
                 it[correo]   = "admin@dif.gob.mx"
-                it[password] = BCrypt.hashpw("admin123", BCrypt.gensalt())
+                it[Usuarios.password] = BCrypt.hashpw("admin123", BCrypt.gensalt())
                 it[rol]      = "admin"
                 it[area]     = "Dirección General"
                 it[creadoEn] = LocalDateTime.now().toString()
