@@ -1,7 +1,7 @@
 FROM gradle:8.10-jdk21 AS build
 WORKDIR /app
 COPY . .
-RUN gradle clean shadowJar --no-daemon -x test 2>/dev/null || gradle clean jar --no-daemon -x test
+RUN gradle clean jar --no-daemon -x test
 
 FROM eclipse-temurin:21-jre
 WORKDIR /app
