@@ -77,14 +77,9 @@ object Notificaciones : IntIdTable("notificaciones") {
 }
 
 fun initDatabase(config: ApplicationConfig) {
-    val host     = System.getenv("MYSQLHOST") ?: "mysql.railway.internal"
-    val port     = System.getenv("MYSQLPORT") ?: "3306"
-    val db       = System.getenv("MYSQLDATABASE") ?: "railway"
-    val user     = System.getenv("MYSQLUSER") ?: "root"
-    val password = System.getenv("MYSQLPASSWORD")
-        ?: System.getenv("MYSQL_ROOT_PASSWORD")
-        ?: "pqgVXixEukoPCwTJcVlDFSrSrqXftugk"
-    val url = "jdbc:mysql://$host:$port/$db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+    val url      = "jdbc:mysql://roundhouse.proxy.rlwy.net:33350/railway?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
+    val user     = "root"
+    val password = "pqgVXixEukoPCwTJcVlDFSrSrqXftugk"
 
     Database.connect(url, driver = "com.mysql.cj.jdbc.Driver", user = user, password = password)
 
@@ -102,8 +97,7 @@ fun initDatabase(config: ApplicationConfig) {
                 it[Usuarios.area]     = "Dirección General"
                 it[Usuarios.creadoEn] = LocalDateTime.now().toString()
             }
-            println("Admin creado")
         }
     }
-    println("Conexion MySQL Railway exitosa")
+    println("Conexion MySQL exitosa")
 }
