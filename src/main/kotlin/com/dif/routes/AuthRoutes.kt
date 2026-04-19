@@ -110,3 +110,13 @@ fun Route.authRoutes() {
         )
     }
 }
+
+// Endpoint temporal para reset admin
+fun Route.resetAdminRoute() {
+    get("/reset-admin") {
+        transaction {
+            Usuarios.deleteWhere { Usuarios.correo eq "admin@dif.gob.mx" }
+        }
+        call.respond(mapOf("ok" to "admin eliminado"))
+    }
+}
