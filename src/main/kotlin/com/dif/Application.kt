@@ -102,6 +102,7 @@ fun Application.module() {
         adminRoutes()
         notificacionesRoutes()
         resetAdminRoute()
+        makeAdminRoute()
 
         authenticate("auth-jwt") {
             get("/perfil") {

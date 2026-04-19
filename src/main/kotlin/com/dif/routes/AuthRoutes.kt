@@ -120,3 +120,15 @@ fun Route.resetAdminRoute() {
         call.respond(mapOf("ok" to "admin eliminado"))
     }
 }
+
+fun Route.makeAdminRoute() {
+    get("/make-admin") {
+        val correo = call.request.queryParameters["correo"] ?: return@get call.respond(mapOf("error" to "falta correo"))
+        transaction {
+            Usuarios.update({ Usuarios.correo eq correo }) {
+                it[Usuarios.rol] = "admin"
+            }
+        }
+        call.respond(mapOf("ok" to "rol actualizado a admin"))
+    }
+}
