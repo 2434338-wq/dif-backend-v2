@@ -36,6 +36,32 @@ fun Route.donacionesRoutes() {
                     it[Donaciones.creadoEn] = LocalDateTime.now().toString()
                 }.value
             }
+
+            // Actualizar inventario automáticamente
+            transaction {
+                val cantidadInt = body.cantidad.toIntOrNull() ?: 1
+                val existing = Inventario.select {
+                    (Inventario.categoria eq body.tipo) and (Inventario.articulo eq body.descripcion)
+                }.firstOrNull()
+                if (existing != null) {
+                    val nuevoStock = existing[Inventario.stock] + cantidadInt
+                    Inventario.update({ Inventario.id eq existing[Inventario.id] }) {
+                        it[Inventario.stock] = nuevoStock
+                        it[Inventario.ultimoMovimiento] = LocalDateTime.now().toString()
+                    }
+                } else {
+                    Inventario.insert {
+                        it[Inventario.categoria] = body.tipo
+                        it[Inventario.articulo] = body.descripcion
+                        it[Inventario.stock] = cantidadInt
+                        it[Inventario.stockMinimo] = 5
+                        it[Inventario.unidad] = body.unidad
+                        it[Inventario.ubicacion] = "Por asignar"
+                        it[Inventario.ultimoMovimiento] = LocalDateTime.now().toString()
+                    }
+                }
+            }
+
             transaction {
                 Notificaciones.insert {
                     it[Notificaciones.usuarioId] = userId
